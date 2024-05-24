@@ -6,6 +6,9 @@ represents a valid UTF-8 encoding.
 
 
 def validUTF8(data):
+    """
+    documentation for the function
+    """
     num_bytes = 0
     mask1 = 1 << 7
     mask2 = 1 << 6
