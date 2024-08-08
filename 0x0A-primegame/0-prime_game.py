@@ -4,42 +4,54 @@
 """
 
 
+def is_prime(num):
+    """
+    is_prime
+    """
+    if num <= 1:
+        return False
+    for i in range(2, int(num**0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+
+def get_primes_up_to(n):
+    """
+    get prime upto n
+    """
+    primes = []
+    for i in range(2, n + 1):
+        if is_prime(i):
+            primes.append(i)
+    return primes
+
+
+def play_game(n):
+    """
+    play the game
+    """
+    primes = get_primes_up_to(n)
+    available = list(range(1, n + 1))
+    current_player = 0  # 0 for Maria, 1 for Ben
+
+    while True:
+        move_made = False
+        for prime in primes:
+            if prime in available:
+                # Remove the prime and all its multiples from available
+                available = [x for x in available if x % prime != 0]
+                move_made = True
+                break
+        if not move_made:
+            return current_player  # The last player to move wins
+        current_player = 1 - current_player  # Switch players
+
+
 def isWinner(x, nums):
     """
-    isWinner function
+    find out winner
     """
-    def sieve_of_eratosthenes(n):
-        """
-        Sieve of Eratosthenes
-        """
-        is_prime = [True] * (n + 1)
-        p = 2
-        while (p * p <= n):
-            if is_prime[p]:
-                for i in range(p * p, n + 1, p):
-                    is_prime[i] = False
-            p += 1
-        is_prime[0], is_prime[1] = False, False
-        return is_prime
-
-    def play_game(n):
-        primes = sieve_of_eratosthenes(n)
-        available = [i for i in range(1, n + 1)]
-        current_player = 0  # 0 for Maria, 1 for Ben
-
-        while True:
-            # Find the next prime in the available numbers
-            move_made = False
-            for num in available:
-                if primes[num]:
-                    # Remove the number and all its multiples
-                    available = [x for x in available if x % num != 0]
-                    move_made = True
-                    break
-            if not move_made:
-                return current_player  # The last player to move wins
-            current_player = 1 - current_player  # Switch players
-
     maria_wins = 0
     ben_wins = 0
 
