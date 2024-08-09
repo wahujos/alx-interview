@@ -1,70 +1,64 @@
 #!/usr/bin/python3
 """
-0. Prime Game
+0. Prime Game module
 """
-
-
-def is_prime(num):
-    """
-    is_prime
-    """
-    if num <= 1:
-        return False
-    for i in range(2, int(num**0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
-
-
-def get_primes_up_to(n):
-    """
-    get prime upto n
-    """
-    primes = []
-    for i in range(2, n + 1):
-        if is_prime(i):
-            primes.append(i)
-    return primes
-
-
-def play_game(n):
-    """
-    play the game
-    """
-    primes = get_primes_up_to(n)
-    available = list(range(1, n + 1))
-    current_player = 0  # 0 for Maria, 1 for Ben
-
-    while True:
-        move_made = False
-        for prime in primes:
-            if prime in available:
-                # Remove the prime and all its multiples from available
-                available = [x for x in available if x % prime != 0]
-                move_made = True
-                break
-        if not move_made:
-            return current_player  # The last player to move wins
-        current_player = 1 - current_player  # Switch players
 
 
 def isWinner(x, nums):
     """
-    find out winner
+    The is winner function
     """
+    if x <= 0 or not nums:
+        return None
+
+    def Sieve_eratosthenes(max_n):
+        """
+        Sieve of Eratosthenes
+        """
+        is_prime = [True] * (max_n + 1)
+        is_prime[0] = is_prime[1] = False
+
+        for i in range(2, max_n + 1):
+            if is_prime[i]:
+                for j in range(i * 2, max_n + 1, i):
+                    is_prime[j] = False
+        primes = [i for i in range(max_n + 1) if is_prime[i]]
+        return primes
+
+    def simulate_game(n, primes):
+        """
+        determine the winner
+        """
+        remaining_numbers = list(range(1, n + 1))
+        maria_turn = True
+
+        while True:
+            prime_found = False
+            for prime in primes:
+                if prime in remaining_numbers:
+                    prime_found = True
+                    break
+
+            if not prime_found:
+                return "Ben" if maria_turn else "Maria"
+
+            remaining_numbers = [num for num in remaining_numbers
+                                 if num % prime != 0]
+            maria_turn = not maria_turn
+
     maria_wins = 0
     ben_wins = 0
 
+    max_n = max(nums)
+
+    primes = Sieve_eratosthenes(max_n)
+
     for n in nums:
-        if n == 1:
-            ben_wins += 1
-            # If n is 1, Maria cannot move, Ben wins automatically
+        winner = simulate_game(n, primes)
+        if winner == "Maria":
+            maria_wins += 1
         else:
-            winner = play_game(n)
-            if winner == 0:
-                maria_wins += 1
-            else:
-                ben_wins += 1
+            ben_wins += 1
 
     if maria_wins > ben_wins:
         return "Maria"
